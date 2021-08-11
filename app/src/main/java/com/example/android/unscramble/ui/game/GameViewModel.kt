@@ -29,13 +29,18 @@ import androidx.lifecycle.ViewModel
  * ViewModel containing the app data and methods to process the data
  */
 class GameViewModel : ViewModel() {
+
+    // Declare private mutable variable that can only be modified
+    // within the class it is declared.
     private val _score = MutableLiveData(0)
-    val score: LiveData<Int>
-        get() = _score
+    // Declare another public immutable field and override its getter method.
+    // Return the private property's value in the getter method.
+    // When score is accessed, the get() function is called and
+    // the value of _score is returned.
+    val score: LiveData<Int> get() = _score
 
     private val _currentWordCount = MutableLiveData(0)
-    val currentWordCount: LiveData<Int>
-        get() = _currentWordCount
+    val currentWordCount: LiveData<Int> get() = _currentWordCount
 
     private val _currentScrambledWord = MutableLiveData<String>()
     val currentScrambledWord: LiveData<Spannable> = Transformations.map(_currentScrambledWord) {
@@ -45,10 +50,10 @@ class GameViewModel : ViewModel() {
             val scrambledWord = it.toString()
             val spannable: Spannable = SpannableString(scrambledWord)
             spannable.setSpan(
-                    TtsSpan.VerbatimBuilder(scrambledWord).build(),
-                    0,
-                    scrambledWord.length,
-                    Spannable.SPAN_INCLUSIVE_INCLUSIVE
+                TtsSpan.VerbatimBuilder(scrambledWord).build(),
+                0,
+                scrambledWord.length,
+                Spannable.SPAN_INCLUSIVE_INCLUSIVE
             )
             spannable
         }
@@ -60,6 +65,7 @@ class GameViewModel : ViewModel() {
 
     init {
         getNextWord()
+        Log.d("GameFragment", "GameViewModel created!")
     }
 
     /*
@@ -120,5 +126,10 @@ class GameViewModel : ViewModel() {
             getNextWord()
             true
         } else false
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        Log.d("GameFragment", "GameViewModel destroyed!")
     }
 }
